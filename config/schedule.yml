@@ -1,0 +1,4 @@
+billing_worker:
+  cron: '1 0 * * *'
+  class: 'DailyBillingWroker'
+  queue: billing
