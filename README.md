@@ -75,7 +75,7 @@ rails s
 ```
 
 ## Testing the application
-Because this application does not have any built-in UI, you can test if the application works by running my RSpec tests
+Because this application does not have any built-in UI, you can test if the application works by running my RSpec tests (usually runs about 3-4 minutes on my machine)
 ```
 rspec
 ```
