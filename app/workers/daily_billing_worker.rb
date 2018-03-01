@@ -10,22 +10,24 @@ class DailyBillingWorker
     # loop through due credits
     due_credits.each do |due_credit|
       if due_credit.balance.amount < due_credit.credit_limit
-        owed_interest = BigDecimal.new(0)
-        last_billing_statement = due_credit.last_billing_statement.presence || (Date.today - 30.days).to_time.to_i
+        owed_interest = 0
+        last_billing_statement = due_credit.last_billing_statement.presence || (DateTime.now - 30.days).to_date.to_time.to_i
         current_balance = due_credit.credit_limit
         current_elapsed_day = 0
 
         # group transactions by day
-        daily_transactions = due_credit.transactions.group_by { |t| t.created_at.to_date }
+        daily_transactions = due_credit.transactions.group_by { |t| t.created_at.beginning_of_day }
         days = daily_transactions.keys.sort
 
         days.each_with_index do |day, i|
 
+          # byebug
+
           # calculate elapsed day
-          elapsed_day = elapsed_days(daily_transactions[day].first.created_at.to_date.to_time.to_i, last_billing_statement)
+          elapsed_day = elapsed_days(daily_transactions[day].first.created_at.beginning_of_day.to_time.to_i, last_billing_statement)
 
           # get next elapsed day
-          next_day = daily_transactions[days[i+1]].nil? ? Date.today.to_date : daily_transactions[days[i+1]].first.created_at.to_date
+          next_day = daily_transactions[days[i+1]].nil? ? Date.today.to_date : daily_transactions[days[i+1]].first.created_at.beginning_of_day
           next_elapsed_day = elapsed_days(next_day.to_time.to_i, last_billing_statement)
 
           # get difference to current elapsed day - will be used for APR calculations
@@ -33,7 +35,6 @@ class DailyBillingWorker
 
           # calculate transactions by the day
           daily_transactions[day].each do |transaction|
-            elapsed_day = elapsed_days(transaction.created_at.to_date.to_time.to_i, last_billing_statement)
             sign = transaction.type == 'Payment' ? 1 : -1
             current_balance += transaction.amount * sign
           end

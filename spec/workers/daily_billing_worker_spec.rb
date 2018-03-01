@@ -20,7 +20,7 @@ RSpec.describe DailyBillingWorker, type: :worker do
       let!(:charge1) { Charge.new(_id: BSON::ObjectId.new, amount: 50000, currency: 'usd', description: 'withdraw') }
 
       it "performs scenario 1 successfully", job: true do
-        credit.created_at = (DateTime.now - 30.days).to_i
+        credit.created_at = (DateTime.now - 30.days).to_time.to_i
         credit.next_billing_statement = Date.today.to_time.to_i
         credit.save!
 
@@ -57,7 +57,7 @@ RSpec.describe DailyBillingWorker, type: :worker do
       let!(:charge2) { Charge.new(_id: BSON::ObjectId.new, amount: 10000, currency: 'usd', description: 'withdraw') }
 
       it "performs scenario 1 successfully", job: true do
-        credit.created_at = (DateTime.now - 30.days).to_i
+        credit.created_at = (DateTime.now - 30.days).to_time.to_i
         credit.next_billing_statement = Date.today.to_time.to_i
         credit.save!
 
