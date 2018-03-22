@@ -46,6 +46,10 @@ class Transaction
     self.type == 'Payment'
   end
 
+  def self.succeeded
+    where(status: 'succeeded')
+  end
+
   def succeeded?
     self.status == 'succeeded'
   end

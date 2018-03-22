@@ -613,12 +613,10 @@ describe 'Credits API' do
           it_behaves_like 'json result'
 
           specify 'balance not updated' do
-            before_balance = user.credits.first.balance
+            updated_value = user.credits.first.balance.amount+user.credits.first.transactions.last.amount-20
             transaction = Transaction.find(transaction_id)
-            rollback_sign = transaction.type == 'Payment' ? 1 : -1
-            rollback_value = transaction.amount * rollback_sign
             api_call params
-            expect(Credit.find(transaction.transactionable.id_str).balance.amount).to eq before_balance.amount
+            expect(Credit.find(transaction.transactionable.id_str).balance.amount).to eq updated_value
           end
         end
 
@@ -630,12 +628,10 @@ describe 'Credits API' do
           it_behaves_like 'json result'
 
           specify 'balance not updated' do
-            before_balance = user.credits.first.balance
+            updated_value = user.credits.first.balance.amount-user.credits.first.transactions.last.amount+20
             transaction = Transaction.find(transaction_id)
-            rollback_sign = transaction.type == 'Payment' ? 1 : -1
-            rollback_value = transaction.amount * rollback_sign
             api_call params
-            expect(Credit.find(transaction.transactionable.id_str).balance.amount).to eq before_balance.amount
+            expect(Credit.find(transaction.transactionable.id_str).balance.amount).to eq updated_value
           end
         end
       end

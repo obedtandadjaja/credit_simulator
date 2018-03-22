@@ -112,10 +112,10 @@ class V1::Transaction::Api < Grape::API
       }
     }
     params do
-      requires :id, type: String, desc: 'Credit id.', documentation: { value: 'greater than or equal to 0' }
-      optional :amount, type: Integer
-      optional :currency, type: String
-      optional :status, type: String
+      requires :id, type: String, desc: 'Transaction id.', documentation: { value: 'greater than or equal to 0' }
+      optional :amount, type: Integer, documentation: { param_type: 'query' }
+      optional :currency, type: String, documentation: { param_type: 'query' }
+      optional :status, type: String, documentation: { param_type: 'query' }
     end
     put '/:id' do
       authorize ['admin']
@@ -155,9 +155,8 @@ class V1::Transaction::Api < Grape::API
         end
 
         status = {}
+        transaction.transactionable.rollback_balance(transaction)
         if transaction.update_attributes!(params)
-          # update credit balance
-          transaction.transactionable.rollback_balance(transaction)
           status = { message: 'Successfully updated transaction', status: 'SUCCESS', processed_at: DateTime.now.to_s }
           if transaction.succeeded?
             transaction.transactionable.update_balance(transaction)

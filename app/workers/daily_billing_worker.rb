@@ -16,7 +16,7 @@ class DailyBillingWorker
         current_elapsed_day = 0
 
         # group transactions by day
-        daily_transactions = due_credit.transactions.group_by { |t| t.created_at.beginning_of_day }
+        daily_transactions = due_credit.transactions.succeeded.group_by { |t| t.created_at.beginning_of_day }
         days = daily_transactions.keys.sort
 
         days.each_with_index do |day, i|
@@ -25,7 +25,7 @@ class DailyBillingWorker
           elapsed_day = elapsed_days(daily_transactions[day].first.created_at.beginning_of_day.to_time.to_i, last_billing_statement)
 
           # get next elapsed day
-          next_day = daily_transactions[days[i+1]].nil? ? Date.today.to_date : daily_transactions[days[i+1]].first.created_at.beginning_of_day
+          next_day = daily_transactions[days[i+1]].nil? ? Date.today : daily_transactions[days[i+1]].first.created_at.beginning_of_day
           next_elapsed_day = elapsed_days(next_day.to_time.to_i, last_billing_statement)
 
           # get difference to current elapsed day - will be used for APR calculations

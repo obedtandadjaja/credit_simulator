@@ -106,8 +106,8 @@ class V1::Credit::Api < Grape::API
       }
     }
     params do
-      requires :credit_limit, type: BigDecimal, desc: 'Credit limit'
-      requires :apr, type: Float, desc: 'APR percentage'
+      requires :credit_limit, type: Integer, desc: 'Credit limit', documentation: { param_type: 'query' }
+      requires :apr, type: Float, desc: 'APR percentage', documentation: { param_type: 'query' }
     end
     post '/' do
       credit = ::Credit.new(credit_limit: params[:credit_limit], apr: params[:apr], active: true)
@@ -156,10 +156,10 @@ class V1::Credit::Api < Grape::API
       }
     }
     params do
-      requires :id, type: String, desc: 'Credit id.'
-      optional :credit_limit, type: Integer
-      optional :apr, type: Float
-      optional :active, type: Boolean
+      requires :id, type: String, desc: 'Credit id.', documentation: { param_type: 'query' }
+      optional :credit_limit, type: Integer, documentation: { param_type: 'query' }
+      optional :apr, type: Float, documentation: { param_type: 'query' }
+      optional :active, type: Boolean, documentation: { param_type: 'query' }
     end
     put '/:id' do
       authorize ['admin']
@@ -198,10 +198,10 @@ class V1::Credit::Api < Grape::API
       }
     }
     params do
-      requires :id, type: String, desc: 'Credit id.'
-      requires :currency, type: String
-      requires :amount, type: Integer, desc: 'Amount in cents'
-      requires :description, type: String, desc: 'Description of the charge (i.e. vendor name)'
+      requires :id, type: String, desc: 'Credit id.', documentation: { param_type: 'query' }
+      requires :currency, type: String, documentation: { param_type: 'query' }
+      requires :amount, type: Integer, desc: 'Amount in cents', documentation: { param_type: 'query' }
+      requires :description, type: String, desc: 'Description of the charge (i.e. vendor name)', documentation: { param_type: 'query' }
     end
     post '/:id/charge' do
       should_be_positive params[:amount] if params[:amount].present?
@@ -237,9 +237,9 @@ class V1::Credit::Api < Grape::API
       }
     }
     params do
-      requires :id, type: String, desc: 'Credit id.'
-      requires :currency, type: String
-      requires :amount, type: Integer, desc: 'Amount in cents'
+      requires :id, type: String, desc: 'Credit id.', documentation: { param_type: 'query' }
+      requires :currency, type: String, documentation: { param_type: 'query' }
+      requires :amount, type: Integer, desc: 'Amount in cents', documentation: { param_type: 'query' }
     end
     post '/:id/payment' do
       should_be_positive params[:amount] if params[:amount].present?
