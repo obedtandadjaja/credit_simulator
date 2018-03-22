@@ -11,7 +11,7 @@ class DailyBillingWorker
     due_credits.each do |due_credit|
       if due_credit.balance.amount < due_credit.credit_limit
         owed_interest = 0
-        last_billing_statement = due_credit.last_billing_statement.presence || (DateTime.now - 30.days).to_date.to_time.to_i
+        last_billing_statement = due_credit.last_billing_statement.presence || (DateTime.now - 30.days).beginning_of_day.to_time.to_i
         current_balance = due_credit.credit_limit
         current_elapsed_day = 0
 
@@ -20,8 +20,6 @@ class DailyBillingWorker
         days = daily_transactions.keys.sort
 
         days.each_with_index do |day, i|
-
-          # byebug
 
           # calculate elapsed day
           elapsed_day = elapsed_days(daily_transactions[day].first.created_at.beginning_of_day.to_time.to_i, last_billing_statement)
