@@ -1,4 +1,4 @@
-# credit_simulator
+# credit_simulator - FAIR INTERVIEW CODE CHALLENGE
 My implementation of a simple credit simulator API. 
 
 Please take into account the short amount of time it took to build this app so please judge the architecture, code quality, and tests with a grain of salt.
